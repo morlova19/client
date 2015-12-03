@@ -107,7 +107,7 @@ public class NewTaskDialog extends JDialog implements ITaskView {
         String desc = description_tf.getText().trim();
         String contacts = contacts_tf.getText().trim();
 
-        Date date = null;
+        Date date;
         date = DateUtil.parse((String)dateField.getValue());
 
         controller.add(createTransferObject(name, date, desc, contacts));
@@ -204,6 +204,10 @@ public class NewTaskDialog extends JDialog implements ITaskView {
         pack();
 
     }
+
+    @Override
+    public void clearView() {}
+
     /**
      * Configures {@link #dateField}.
      * Sets date format and default value.

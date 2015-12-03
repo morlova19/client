@@ -99,6 +99,16 @@ public class RegistrationForm extends JDialog implements IView, ActionListener, 
     }
 
     @Override
+    public void clearView() {
+        loginTextField.setText("");
+        passwordField.setText("");
+        confirmPasswordField.setText("");
+        login_err_label.setText("");
+        pass_err_label.setText("");
+        conf_pass_err_label.setText("");
+    }
+
+    @Override
     public void open() {
         pack();
         setVisible(true);

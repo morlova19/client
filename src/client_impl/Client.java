@@ -1,6 +1,6 @@
-package callback_impl;
+package client_impl;
 
-import callback.IClient;
+import client.IClient;
 import controller.classes.TasksController;
 import journal.IJournalManager;
 import utils.RegistryUtils;

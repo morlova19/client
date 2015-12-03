@@ -51,6 +51,7 @@ public class LoginController implements ILoginController {
             try {
                 isAuthorized = RegistryUtils.registerClient(l, p);
                 if (isAuthorized) {
+                    aView.clearView();
                     aView.close();
                     observer.update(l);
                 }
@@ -95,10 +96,11 @@ public class LoginController implements ILoginController {
             try {
                 isRegistered = RegistryUtils.newUser(login, p);
                 if (isRegistered) {
+                    rView.clearView();
                     rView.close();
                 }
                 else {
-                    rView.showError(Constants.USER_ALSO_EXIST,Constants.CONFIRM_PASS);
+                    rView.showError(Constants.USER_ALREADY_EXISTS,Constants.CONFIRM_PASS);
                 }
             } catch (RemoteException e) {
                 rView.showError(Constants.CANNOT_AUTHORIZE, Constants.CONFIRM_PASS);

@@ -64,15 +64,15 @@ public final class Constants {
      * Error message that will be displayed in {@link #CONFIRM_PASS}
      * when user tries to register with login that is already occupied by another user.
      */
-    public static final String USER_ALSO_EXIST = "User also exists";
+    public static final String USER_ALREADY_EXISTS = "User already exists";
     /**
      * Error message that will be displayed in {@link #DATE} if date is not correct.
      */
-    public static final String INCORRECT_DATE = "Please enter correct date";
+    public static final String INCORRECT_DATE = "Enter correct date";
     /**
      * Error message that will be displayed in {@link #NAME} if name is not correct.
      */
     public static final String INCORRECT_NAME = "Name cannot be empty";
 
-    public static final String PLEASE_SELECT_TASK = "Please, select task";
+    public static final String PLEASE_SELECT_TASK = "Select task";
 }

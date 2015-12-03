@@ -34,4 +34,9 @@ public interface IView extends ActionListener {
      * Creates view.
      */
     void createView();
+
+    /**
+     * Clears view.
+     */
+    void clearView();
 }

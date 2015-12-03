@@ -5,7 +5,7 @@ package controller.interfaces;
  */
 public interface IController {
     /**
-     * Starts working.
+     * Starts app.
      */
     void start();
     /**

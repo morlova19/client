@@ -147,6 +147,11 @@ public class TaskDialog extends JDialog implements ITaskView, ActionListener {
     }
 
     @Override
+    public void clearView() {
+
+    }
+
+    @Override
     public void displayTaskName(String name) {
         name_tf.setText(name);
         name_tf.setEditable(false);

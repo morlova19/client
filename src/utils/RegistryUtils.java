@@ -1,9 +1,9 @@
 package utils;
 
 
-import callback_impl.Client;
-import callback.IClient;
-import callback.IServer;
+import client_impl.Client;
+import client.IClient;
+import server.IServer;
 import journal.IJournalManager;
 
 import javax.swing.*;
@@ -130,6 +130,10 @@ public class RegistryUtils {
         }
     }
 
+    /**
+     * Gets client's login.
+     * @return login.
+     */
     public static String getClientLogin() {
         try {
             return client.getLogin();

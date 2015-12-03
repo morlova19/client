@@ -193,7 +193,7 @@ public class TasksForm extends JFrame implements ITasksView, CustomWindowListene
         setContentPane(mainPanel);
         setTitle(TASK_MANAGER);
 
-        String text = "<html> User: <b> <em>" + RegistryUtils.getClientLogin() + "</em></b></html>";
+        String text = "<html> User: <strong> <em>" + RegistryUtils.getClientLogin() + "</em></strong></html>";
         user_label.setText(text);
         setIconImage(utils.Icon.getIcon());
         taskList.setFixedCellWidth(200);
@@ -207,6 +207,11 @@ public class TasksForm extends JFrame implements ITasksView, CustomWindowListene
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
+    }
+
+    @Override
+    public void clearView() {
+
     }
 
     @Override
