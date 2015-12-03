@@ -6,7 +6,7 @@ import java.rmi.RemoteException;
 /**
  * Remote user interface.
  */
-public interface ICallbackClient extends Remote {
+public interface IClient extends Remote {
     /**
      * Updates user's data.
      */

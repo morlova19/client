@@ -17,7 +17,6 @@ import view.interfaces.ITasksView;
 
 import javax.swing.*;
 import java.util.ArrayList;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class TasksController implements ITasksController {
     /**
@@ -25,20 +24,42 @@ public class TasksController implements ITasksController {
      */
     private IModel model;
 
+    /**
+     * View for displaying tasks.
+     */
     private ITasksView tasksView;
 
+    /**
+     * View for creating new task.
+     */
     private ITaskView newTaskView;
 
+    /**
+     * View for displaying task's details.
+     */
     private ITaskView taskView;
 
+    /**
+     * Current state of {@link #tasksView}.
+     */
     private int current_state;
 
+    /**
+     * Instance of this controller.
+     */
     private static ITasksController controller;
+    /**
+     * Array in which index this is number of the task in {@link #tasksView}
+     * and value of this element in array this is identifier of this task.
+     */
+    private int[] pairs;
     /**
      * Constructs new controller.
      * Creates and displays GUI.
      * @param model model.
      */
+
+
     public TasksController(IModel model)  {
         if(model != null)
         {
@@ -95,13 +116,17 @@ public class TasksController implements ITasksController {
         }
     }
     @Override
-    public void delete(int id) {
+    public void delete(int index) {
 
-        int answer = tasksView.display_confirm_dialog();
-        if(answer == JOptionPane.YES_OPTION)
-        {
-            model.delete(id);
-            load();
+        if(index != -1) {
+            int answer = tasksView.display_confirm_dialog();
+            if (answer == JOptionPane.YES_OPTION) {
+                model.delete(pairs[index]);
+                load();
+            }
+        }
+        else {
+            tasksView.display_message_dialog(Constants.PLEASE_SELECT_TASK);
         }
     }
     @Override
@@ -110,7 +135,7 @@ public class TasksController implements ITasksController {
         {
             tasksView.enable_add_button(false);
 
-            int[] pairs = new int[model.getCompletedTasks().size()];
+            pairs = new int[model.getCompletedTasks().size()];
             int[] index = {0};
 
            ArrayList<String> tasks_names = new ArrayList<>();
@@ -119,13 +144,13 @@ public class TasksController implements ITasksController {
                         pairs[index[0]] =  task.getID();
                         index[0]++; }));
 
-            tasksView.updateList(tasks_names,pairs);
+            tasksView.updateList(tasks_names);
             tasksView.open();
         }
         else {
             tasksView.enable_add_button(true);
 
-            int[] pairs = new int[model.getCurrentTasks().size()];
+            pairs = new int[model.getCurrentTasks().size()];
             int[] index = {0};
             ArrayList<String> tasks_names = new ArrayList<>();
 
@@ -134,23 +159,26 @@ public class TasksController implements ITasksController {
                 pairs[index[0]] =  task.getID();
                 index[0]++; }));
 
-            tasksView.updateList(tasks_names,pairs);
+            tasksView.updateList(tasks_names);
             tasksView.open();
         }
     }
     @Override
-    public void show(int id) {
-        taskView = new TaskDialog(this);
-        taskView.createView();
-        Task t = model.get(id);
-        if(t != null)
-        {
-            taskView.displayTaskName(t.getName());
-            taskView.displayTaskDesc(t.getDescription());
-            taskView.displayTaskDate(DateUtil.format(t.getDate()));
-            taskView.displayTaskContacts(t.getContacts());
-            taskView.open();
+    public void show(int index) {
+        if(index != -1) {
+
+            taskView = new TaskDialog(this);
+            taskView.createView();
+            Task t = model.get(pairs[index]);
+            if (t != null) {
+                taskView.displayTaskName(t.getName());
+                taskView.displayTaskDesc(t.getDescription());
+                taskView.displayTaskDate(DateUtil.format(t.getDate()));
+                taskView.displayTaskContacts(t.getContacts());
+                taskView.open();
+            }
         }
+
     }
 
     @Override
@@ -165,7 +193,6 @@ public class TasksController implements ITasksController {
         tasksView.createView();
         current_state = Constants.CURRENT;
         load();
-        //tasksView.open();
     }
 
     @Override

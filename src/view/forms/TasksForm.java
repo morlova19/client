@@ -86,11 +86,6 @@ public class TasksForm extends JFrame implements ITasksView, CustomWindowListene
      */
     private final String DISPLAY_COMPLETED_ACTION = "display completed";
     /**
-     * Thread-safe array in which index this is number of the task in {@link #taskList}
-     * and value of this element in array this is identifier of this task.
-     */
-    private AtomicIntegerArray pairs;
-    /**
      * Creates and displays form.
      * @param c controller
      * @throws HeadlessException thrown when code that is dependent on a keyboard, display, or mouse
@@ -117,13 +112,7 @@ public class TasksForm extends JFrame implements ITasksView, CustomWindowListene
      * If user confirms, informs the controller.
      */
     private void deleteAction() {
-        int index = taskList.getSelectedIndex();
-        if(index != -1) {
-            c.delete(pairs.get(index));
-        }
-        else {
-            display_message_dialog(PLEASE_SELECT_TASK);
-        }
+        c.delete(taskList.getSelectedIndex());
     }
 
     @Override
@@ -150,20 +139,15 @@ public class TasksForm extends JFrame implements ITasksView, CustomWindowListene
     public void mouseClicked(MouseEvent e) {
         if(e.getSource() == taskList && e.getClickCount() == 2)
         {
-            int index = taskList.getSelectedIndex();
-            if(index != -1) {
-
-                c.show(pairs.get(index));
-            }
+            c.show(taskList.getSelectedIndex());
         }
     }
 
     @Override
-    public void updateList(ArrayList<String> tasks_names, int[] indecies) {
+    public void updateList(ArrayList<String> tasks_names) {
         if(tasks_names != null) {
-            pairs = new AtomicIntegerArray(indecies);
             DefaultListModel<String> listModel = new DefaultListModel<>();
-            tasks_names.stream().forEach(s -> listModel.addElement(s));
+            tasks_names.stream().forEach(listModel::addElement);
             taskList.setModel(listModel);
         }
     }

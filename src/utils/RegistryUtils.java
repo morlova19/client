@@ -1,15 +1,17 @@
 package utils;
 
 
-import callback_impl.CallbackClientImpl;
-import callback.ICallbackClient;
-import callback.ICallbackServer;
+import callback_impl.Client;
+import callback.IClient;
+import callback.IServer;
 import journal.IJournalManager;
 
+import javax.swing.*;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.Arrays;
 
 /**
  * Class for working with rmi registry and remotes objects.
@@ -22,11 +24,11 @@ public class RegistryUtils {
     /**
      * Remote server for registration clients.
      */
-    private static ICallbackServer server;
+    private static IServer server;
     /**
      * Client for registration on server.
      */
-    private static ICallbackClient client;
+    private static IClient client;
     /**
      * Remote journal manager.
      */
@@ -34,15 +36,21 @@ public class RegistryUtils {
 
     /**
      * Searches remote server.
-     * @return remote server.
      */
     private static void getServerInstance() {
         getRegistryInstance();
         if(server == null)
         {
             try {
-                server = (ICallbackServer) registry.lookup("IAuthorizationService");
-            } catch (RemoteException | NotBoundException e) {
+                server = (IServer) registry.lookup("IAuthorizationService");
+            } catch (RemoteException  e) {
+
+               JOptionPane.showMessageDialog(new JFrame(),"Cannot connect to server, trying again later.");
+                server = null;
+            }
+            catch (NotBoundException e)
+            {
+                JOptionPane.showMessageDialog(new JFrame(),"Cannot authorize, trying again later.");
                 server = null;
             }
         }
@@ -60,8 +68,13 @@ public class RegistryUtils {
         {
             try {
                 manager = (IJournalManager) registry.lookup(login);
-            } catch (RemoteException | NotBoundException e) {
+            } catch (RemoteException e) {
+                JOptionPane.showMessageDialog(new JFrame(),"Cannot connect to server, trying again later.");
                 manager = null;
+            }
+            catch (NotBoundException e)
+            {
+                JOptionPane.showMessageDialog(new JFrame(),"Cannot find journal, trying again later.");
             }
         }
         return manager;
@@ -75,8 +88,8 @@ public class RegistryUtils {
         {
             try {
                 registry = LocateRegistry.getRegistry("localhost", 7777);
-
             } catch (RemoteException e) {
+                JOptionPane.showMessageDialog(new JFrame(), Arrays.toString(e.getStackTrace()));
                 registry = null;
             }
         }
@@ -93,16 +106,14 @@ public class RegistryUtils {
     public static boolean registerClient(String login, String pass) throws RemoteException {
         getServerInstance();
 
-        client = new CallbackClientImpl(login, pass);
+        client = new Client(login, pass);
         if(server != null) {
-            return server.registerUserInterface(client);
+            return server.registerUI(client);
         }
         else {
             return false;
         }
-
     }
-
     /**
      * Unregister {@link #client}.
      */
@@ -112,7 +123,7 @@ public class RegistryUtils {
         if(client != null)
         {
             try {
-                server.unregisterUserInterface(client);
+                server.unregisterUI(client);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -136,9 +147,8 @@ public class RegistryUtils {
      */
     public static boolean newUser(String login, String pass) throws RemoteException {
         getServerInstance();
-        if(server != null)
-        {
-            return server.newUser(new CallbackClientImpl(login, pass));
+        if(server != null) {
+            return server.newUser(new Client(login, pass));
         }
         return false;
     }

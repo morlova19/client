@@ -1,6 +1,6 @@
 package callback_impl;
 
-import callback.ICallbackClient;
+import callback.IClient;
 import controller.classes.TasksController;
 import journal.IJournalManager;
 import utils.RegistryUtils;
@@ -10,17 +10,17 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 
-public class CallbackClientImpl extends UnicastRemoteObject implements ICallbackClient,Serializable {
+public class Client extends UnicastRemoteObject implements IClient,Serializable {
     private String login;
     private String pass;
-    public CallbackClientImpl(String login, String pass) throws RemoteException {
+    public Client(String login, String pass) throws RemoteException {
         super();
         this.login = login;
         this.pass = pass;
     }
 
     public void update() {
-        IJournalManager manager = null;
+        IJournalManager manager;
         manager = RegistryUtils.getJournalManagerInstance(login);
         if (manager != null) {
             TasksController.getInstance().updateModel(manager);

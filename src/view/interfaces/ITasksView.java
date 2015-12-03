@@ -8,9 +8,8 @@ public interface ITasksView extends IView {
     /**
      * Updates list of tasks on view.
      * @param tasks_names names of tasks.
-     * @param indecies identifiers of tasks.
      */
-    void updateList(ArrayList<String> tasks_names, int[] indecies);
+    void updateList(ArrayList<String> tasks_names);
     /**
      * Enables button to add or not.
      * @param b if true button will be enabled, else - not enabled.

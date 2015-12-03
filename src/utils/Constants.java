@@ -73,4 +73,6 @@ public final class Constants {
      * Error message that will be displayed in {@link #NAME} if name is not correct.
      */
     public static final String INCORRECT_NAME = "Name cannot be empty";
+
+    public static final String PLEASE_SELECT_TASK = "Please, select task";
 }
