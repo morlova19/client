@@ -5,6 +5,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Class for working with date.
@@ -13,7 +15,7 @@ public class DateUtil {
     /**
      * Date format.
      */
-    private static DateFormat df = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+    private static DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.SHORT, Locale.getDefault());
 
     /**
      * Parses string into date.
@@ -23,13 +25,13 @@ public class DateUtil {
     public static Date parse(String date)
     {
         df.setLenient(false);
+        df.setTimeZone(TimeZone.getTimeZone("Europe/Samara"));
         try {
             Date d = df.parse(date);
             return d;
         } catch (ParseException e) {
             return null;
         }
-
     }
     /**
      * Formats date into string.
@@ -39,6 +41,7 @@ public class DateUtil {
     public static String format(Date date)
     {
         df.setLenient(false);
+        df.setTimeZone(TimeZone.getTimeZone("Europe/Samara"));
         return df.format(date);
     }
     /**

@@ -6,17 +6,28 @@ import client.IClient;
 import server.IServer;
 import journal.IJournalManager;
 
+import javax.crypto.Cipher;
 import javax.swing.*;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
+import java.util.Base64;
 
 /**
  * Class for working with rmi registry and remotes objects.
  */
 public class RegistryUtils {
+    /**
+     * Algorithm of encryption.
+     */
+    private static final java.lang.String ALGO = "RSA";
     /**
      * Rmi registry.
      */
@@ -33,7 +44,6 @@ public class RegistryUtils {
      * Remote journal manager.
      */
     private static IJournalManager manager;
-
     /**
      * Searches remote server.
      */
@@ -45,12 +55,12 @@ public class RegistryUtils {
                 server = (IServer) registry.lookup("IAuthorizationService");
             } catch (RemoteException  e) {
 
-               JOptionPane.showMessageDialog(new JFrame(),"Cannot connect to server, trying again later.");
+               JOptionPane.showMessageDialog(new JFrame(),"Cannot connect to server, try again later.");
                 server = null;
             }
             catch (NotBoundException e)
             {
-                JOptionPane.showMessageDialog(new JFrame(),"Cannot authorize, trying again later.");
+                JOptionPane.showMessageDialog(new JFrame(),"Cannot authorize, try again later.");
                 server = null;
             }
         }
@@ -69,12 +79,12 @@ public class RegistryUtils {
             try {
                 manager = (IJournalManager) registry.lookup(login);
             } catch (RemoteException e) {
-                JOptionPane.showMessageDialog(new JFrame(),"Cannot connect to server, trying again later.");
+                JOptionPane.showMessageDialog(new JFrame(),"Cannot connect to server, try again later.");
                 manager = null;
             }
             catch (NotBoundException e)
             {
-                JOptionPane.showMessageDialog(new JFrame(),"Cannot find journal, trying again later.");
+                JOptionPane.showMessageDialog(new JFrame(),"Cannot find journal, try again later.");
             }
         }
         return manager;
@@ -105,8 +115,22 @@ public class RegistryUtils {
      */
     public static boolean registerClient(String login, String pass) throws RemoteException {
         getServerInstance();
+       // client = new Client(login, pass);
+        try {
+            KeyFactory keyFactory = KeyFactory.getInstance(ALGO);
+            byte[] public_key_bytes = Base64.getDecoder().decode(server.getPublicKey());
 
-        client = new Client(login, pass);
+            X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(public_key_bytes);
+            PublicKey publicKey = keyFactory.generatePublic(publicKeySpec);
+
+            String pass1 = encrypt(pass,publicKey);
+            client = new Client(login, pass1);
+        } catch (NoSuchAlgorithmException e) {
+           // e.printStackTrace();
+        } catch (InvalidKeySpecException e) {
+          //  e.printStackTrace();
+        }
+
         if(server != null) {
             return server.registerUI(client);
         }
@@ -129,7 +153,6 @@ public class RegistryUtils {
             }
         }
     }
-
     /**
      * Gets client's login.
      * @return login.
@@ -152,8 +175,37 @@ public class RegistryUtils {
     public static boolean newUser(String login, String pass) throws RemoteException {
         getServerInstance();
         if(server != null) {
-            return server.newUser(new Client(login, pass));
+            //return server.newUser(new Client(login, pass));
+            try {
+                KeyFactory keyFactory = KeyFactory.getInstance(ALGO);
+                byte[] public_key_bytes = Base64.getDecoder().decode(server.getPublicKey());
+                X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(public_key_bytes);
+                PublicKey publicKey = keyFactory.generatePublic(publicKeySpec);
+                String encrypted_pass = encrypt(pass,publicKey);
+                return server.newUser(new Client(login, encrypted_pass));
+            } catch (NoSuchAlgorithmException e) {
+                //e.printStackTrace();
+            } catch (InvalidKeySpecException e) {
+               // e.printStackTrace();
+            }
         }
         return false;
+    }
+    /**
+     * Encrypts specified password with specified public key.
+     * @param pass password.
+     * @param key public key.
+     * @return encrypted password.
+     */
+    private static String encrypt(String pass, PublicKey key) {
+        byte[] cipherText = null;
+        try {
+            final Cipher cipher = Cipher.getInstance(ALGO);
+            cipher.init(Cipher.ENCRYPT_MODE, key);
+            cipherText = cipher.doFinal(pass.getBytes("UTF-8"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Base64.getEncoder().encodeToString(cipherText);
     }
 }

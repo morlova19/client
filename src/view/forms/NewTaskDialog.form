@@ -102,9 +102,11 @@
           </component>
           <scrollpane id="2ba8b">
             <constraints>
-              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
-            <properties/>
+            <properties>
+              <horizontalScrollBarPolicy value="31"/>
+            </properties>
             <border type="none"/>
             <children>
               <component id="aa658" class="javax.swing.JTextArea" binding="description_tf">
@@ -126,9 +128,11 @@
           </component>
           <scrollpane id="d486c">
             <constraints>
-              <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
-            <properties/>
+            <properties>
+              <horizontalScrollBarPolicy value="31"/>
+            </properties>
             <border type="none"/>
             <children>
               <component id="dea1f" class="javax.swing.JTextArea" binding="contacts_tf">

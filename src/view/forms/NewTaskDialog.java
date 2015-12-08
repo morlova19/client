@@ -15,6 +15,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -175,6 +176,7 @@ public class NewTaskDialog extends JDialog implements ITaskView {
         name_err_label.setText(text);
         name_err_label.setForeground(Color.red);
         name_tf.setBorder(border);
+        pack();
     }
     /**
      * Changes appearance of the {@link #dateField} and {@link #date_err_label}.
@@ -185,6 +187,7 @@ public class NewTaskDialog extends JDialog implements ITaskView {
         date_err_label.setForeground(Color.red);
         date_err_label.setText(text);
         dateField.setBorder(border);
+        pack();
     }
 
     @Override
@@ -225,7 +228,7 @@ public class NewTaskDialog extends JDialog implements ITaskView {
                 DefaultFormatterFactory(dateFormatter);
         dateField.setFormatterFactory(dateFormatterFactory);
 
-        String date = DateUtil.format(new Date());
+        String date = DateUtil.format(new Date(System.currentTimeMillis()));
         dateField.setValue(date);
     }
 
