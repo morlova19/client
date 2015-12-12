@@ -4,7 +4,7 @@ import controller.interfaces.ITasksController;
 import journal.IJournalManager;
 import model.Model;
 import utils.Constants;
-import utils.DateUtil;
+import utils.DateUtils;
 import journal.Task;
 import model.IModel;
 import to.TransferObject;
@@ -89,7 +89,7 @@ public class TasksController implements ITasksController {
     public void add(TransferObject data) {
 
         boolean isCorrectName = !data.getName().isEmpty();
-        boolean isCorrectDate = DateUtil.isCorrect(data.getDate());
+        boolean isCorrectDate = DateUtils.isCorrect(data.getDate());
 
         if(isCorrectName && isCorrectDate) {
             newTaskView.resetError(Constants.DATE);
@@ -166,19 +166,17 @@ public class TasksController implements ITasksController {
     @Override
     public void show(int index) {
         if(index != -1) {
-
             taskView = new TaskDialog(this);
             taskView.createView();
             Task t = model.get(pairs[index]);
             if (t != null) {
                 taskView.displayTaskName(t.getName());
                 taskView.displayTaskDesc(t.getDescription());
-                taskView.displayTaskDate(DateUtil.format(t.getDate()));
+                taskView.displayTaskDate(DateUtils.format(t.getDate()));
                 taskView.displayTaskContacts(t.getContacts());
                 taskView.open();
             }
         }
-
     }
 
     @Override

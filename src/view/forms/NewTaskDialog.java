@@ -1,7 +1,6 @@
 package view.forms;
 
 import controller.interfaces.ITasksController;
-import journal.Task;
 import to.TransferObject;
 import utils.*;
 import utils.Icon;
@@ -13,9 +12,7 @@ import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.ParseException;
-import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -109,7 +106,7 @@ public class NewTaskDialog extends JDialog implements ITaskView {
         String contacts = contacts_tf.getText().trim();
 
         Date date;
-        date = DateUtil.parse((String)dateField.getValue());
+        date = DateUtils.parse((String) dateField.getValue());
 
         controller.add(createTransferObject(name, date, desc, contacts));
     }
@@ -228,7 +225,7 @@ public class NewTaskDialog extends JDialog implements ITaskView {
                 DefaultFormatterFactory(dateFormatter);
         dateField.setFormatterFactory(dateFormatterFactory);
 
-        String date = DateUtil.format(new Date(System.currentTimeMillis()));
+        String date = DateUtils.format(new Date(System.currentTimeMillis()));
         dateField.setValue(date);
     }
 

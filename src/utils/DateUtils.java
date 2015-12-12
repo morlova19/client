@@ -11,7 +11,7 @@ import java.util.TimeZone;
 /**
  * Class for working with date.
  */
-public class DateUtil {
+public class DateUtils {
     /**
      * Date format.
      */

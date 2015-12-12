@@ -24,10 +24,7 @@ import java.util.Base64;
  * Class for working with rmi registry and remotes objects.
  */
 public class RegistryUtils {
-    /**
-     * Algorithm of encryption.
-     */
-    private static final java.lang.String ALGO = "RSA";
+
     /**
      * Rmi registry.
      */
@@ -115,15 +112,8 @@ public class RegistryUtils {
      */
     public static boolean registerClient(String login, String pass) throws RemoteException {
         getServerInstance();
-       // client = new Client(login, pass);
         try {
-            KeyFactory keyFactory = KeyFactory.getInstance(ALGO);
-            byte[] public_key_bytes = Base64.getDecoder().decode(server.getPublicKey());
-
-            X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(public_key_bytes);
-            PublicKey publicKey = keyFactory.generatePublic(publicKeySpec);
-
-            String pass1 = encrypt(pass,publicKey);
+            String pass1 = EncryptionUtils.encrypt(pass, server.getPublicKey());
             client = new Client(login, pass1);
         } catch (NoSuchAlgorithmException e) {
            // e.printStackTrace();
@@ -164,7 +154,6 @@ public class RegistryUtils {
             return "";
         }
     }
-
     /**
      * Creates new user with specified login and password.
      * @param login login.
@@ -175,37 +164,14 @@ public class RegistryUtils {
     public static boolean newUser(String login, String pass) throws RemoteException {
         getServerInstance();
         if(server != null) {
-            //return server.newUser(new Client(login, pass));
             try {
-                KeyFactory keyFactory = KeyFactory.getInstance(ALGO);
-                byte[] public_key_bytes = Base64.getDecoder().decode(server.getPublicKey());
-                X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(public_key_bytes);
-                PublicKey publicKey = keyFactory.generatePublic(publicKeySpec);
-                String encrypted_pass = encrypt(pass,publicKey);
+                String encrypted_pass = EncryptionUtils.encrypt(pass, server.getPublicKey());
                 return server.newUser(new Client(login, encrypted_pass));
-            } catch (NoSuchAlgorithmException e) {
-                //e.printStackTrace();
-            } catch (InvalidKeySpecException e) {
-               // e.printStackTrace();
+            } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+
             }
         }
         return false;
     }
-    /**
-     * Encrypts specified password with specified public key.
-     * @param pass password.
-     * @param key public key.
-     * @return encrypted password.
-     */
-    private static String encrypt(String pass, PublicKey key) {
-        byte[] cipherText = null;
-        try {
-            final Cipher cipher = Cipher.getInstance(ALGO);
-            cipher.init(Cipher.ENCRYPT_MODE, key);
-            cipherText = cipher.doFinal(pass.getBytes("UTF-8"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return Base64.getEncoder().encodeToString(cipherText);
-    }
+
 }
